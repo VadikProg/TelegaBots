@@ -6,18 +6,18 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class TelegramBot extends TelegramLongPollingBot {
+public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         String message = update.getMessage().getText();
         SendMessage SendMessage = new SendMessage();
+        SendMessage.setChatId(update.getMessage().getChatId().toString());
 
-        if(message.equals("/hibro")){
-            SendMessage.setText("i am a girl");
-            System.out.println("Йоу братан");
-        }else if(message.equals("/lulz")){
-
-            SendMessage.setText("Курим бошки");
+        if(message.equals("/start")){
+            SendMessage.setText("Привет, я админ этого чата");
+        }else if(message.equals("/BanWords")){
+            SendMessage.setText(update.getMessage().getFrom().getFirstName());
+            SendMessage.setText("Пидор; Нигга; Хач;");
         }
 
         try {
