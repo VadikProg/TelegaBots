@@ -12,11 +12,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String prefix = "/";
+        String[] BanWords = {"BanWord", "Nigger"};
+
         String message = update.getMessage().getText();
+        int MessageID = update.getMessage().getMessageId();
+        String UserID = update.getMessage().getAuthorSignature();
+        System.out.println("Сигнатура автора " + UserID); //Я хз, что такое сигнатура, це дебаг
+
         SendMessage SendMessage = new SendMessage();
         SendMessage.setChatId(update.getMessage().getChatId().toString());
 
-        if(message.startsWith(prefix)){
+        if(message.startsWith(prefix)){ //Обработка сообщения с префиксом(prefix)
             message = message.substring(prefix.length(), message.length() - 1);
             String[] Prearguments = message.split(" ");
             String command = Prearguments[0];
@@ -25,8 +31,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 SendMessage.setText("Привет, я админ этого чата");
             }else if(command.equals("/BanWords")){
                 SendMessage.setText(update.getMessage().getFrom().getFirstName());
-                SendMessage.setText("Пидор; Нигга; Хач;");
+                SendMessage.setText(BanWords.toString());
             }
+        }else{ //Сюда заходим если пришло обычное сообщение
+            String[] msg = message.split(" ");
         }
         
         try {
@@ -41,6 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public String getBotToken() {
-        return "933229353:AAHKPN8Pe2PeIQp8bvmSOPJmpGDr-UMp2YU";
+        return "933229353:AAEBUDqQTUIk7auGEt5Su_nlB39s600wnLs";
     }
 }
