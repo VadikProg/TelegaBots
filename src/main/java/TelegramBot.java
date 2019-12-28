@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -20,7 +21,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         System.out.println("Сигнатура автора " + UserID); //Я хз, что такое сигнатура, це дебаг
 
         SendMessage SendMessage = new SendMessage();
+        DeleteMessage DelMessage = new DeleteMessage();
+
         SendMessage.setChatId(update.getMessage().getChatId().toString());
+        DelMessage.setChatId(update.getMessage().getChatId().toString());
+
 
         if(message.startsWith(prefix)){ //Обработка сообщения с префиксом(prefix)
             message = message.substring(prefix.length(), message.length() - 1);
@@ -32,6 +37,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             }else if(command.equals("/BanWords")){
                 SendMessage.setText(update.getMessage().getFrom().getFirstName());
                 SendMessage.setText(BanWords.toString());
+            }else{
+                DelMessage.setMessageId(MessageID);
             }
         }else{ //Сюда заходим если пришло обычное сообщение
             String[] msg = message.split(" ");
