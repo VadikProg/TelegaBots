@@ -1,8 +1,8 @@
 import java.lang.*;
 import java.io.*;
 import java.math.*;
-import java.sql.Array;
-import java.util.Arrays;
+import java.sql.*;
+import java.util.*;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         final String prefix = "/";
-        String[] BanWords = {"BanWord", "Nigger"};
+        String[] BanWords = {"BanWord", "Nigger", "pshit"};
 
         String message = update.getMessage().getText();
         int MessageID = update.getMessage().getMessageId();
@@ -26,24 +26,38 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage.setChatId(update.getMessage().getChatId().toString());
         DelMessage.setChatId(update.getMessage().getChatId().toString());
 
-
         if(message.startsWith(prefix)){ //Обработка сообщения с префиксом(prefix)
             message = message.substring(prefix.length(), message.length() - 1);
-            String[] Prearguments = message.split(" ");
-            String command = Prearguments[0];
-            String[] arguments = Arrays.copyOfRange(Prearguments, 1, Prearguments.length - 1);
+            String[] PreArguments = message.split(" ");
+            String command = PreArguments[0];
+            String[] arguments = Arrays.copyOfRange(PreArguments, 1, PreArguments.length - 1);
             if(command.equals("/start")){
-                SendMessage.setText("Привет, я админ этого чата");
+                StringBuilder builder = new StringBuilder();
+                builder.append("Привет, я админ этого чата\n");
+                builder.append("Мои комманды:\n");
+                builder.append(" /start\n/BanWords");
+                SendMessage.setText(builder.toString());
             }else if(command.equals("/BanWords")){
                 SendMessage.setText(update.getMessage().getFrom().getFirstName());
-                SendMessage.setText(BanWords.toString());
-            }else{
-                DelMessage.setMessageId(MessageID);
+                StringBuilder builder = new StringBuilder();
+                builder.append("Запрещенные слова:");
+                for(String i : BanWords){
+                    builder.append(" ");
+                    builder.append(i);
+                }
+                SendMessage.setText(builder.toString());
+            }else{ //Тут еще обработка
+                System.out.println("Удаляем неверную комманду");
             }
         }else{ //Сюда заходим если пришло обычное сообщение
             String[] msg = message.split(" ");
+            for(String i : BanWords){
+                if(message.contains(i)){
+                    System.out.println("BanWord " + i);
+                    //DelMessage.setMessageId(MessageID);
+                }
+            }
         }
-        
         try {
             execute(SendMessage);
         } catch (TelegramApiException e) {
